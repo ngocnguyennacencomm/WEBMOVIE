@@ -2,5 +2,5 @@
   "name": "vsmov-app",
   "version": "1.0.0",
   "description": "Web xem phim cá nhân - vsmov.com",
-  "engines": { "node": "18.x" }
+  "engines": { "node": "24.x" }
 }
