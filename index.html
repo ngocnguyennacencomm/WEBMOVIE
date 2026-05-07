@@ -382,7 +382,7 @@ function renderMovies(movies) {
     return;
   }
   grid.innerHTML = movies.map(m => {
-    const thumb = m.thumb_url || m.poster_url || '';
+    const thumb = m.thumb_url ? (m.thumb_url.startsWith('http') ? m.thumb_url : 'https://img.ophim.live/uploads/movies/' + m.thumb_url) : (m.poster_url || '');
     const ep    = m.episode_current || '';
     const qual  = m.quality || '';
     const name  = (m.name || m.title || 'Chưa có tên').replace(/"/g, '&quot;');
@@ -452,7 +452,7 @@ async function openPlayer(slug, title) {
     const movie = data.movie || data.data || data;
     document.getElementById('playerTitle').textContent = movie.name || title;
 
-    const episodes = movie.episodes || [];
+    const episodes = movie.episodes || movie.movie?.episodes || [];
     currentServers = episodes;
 
     if (episodes.length > 1) {
@@ -470,7 +470,7 @@ async function openPlayer(slug, title) {
 
 function renderEpisodes(serverData, serverIdx) {
   activeServer = serverIdx;
-  const eps = serverData?.server_data || [];
+  const episodes = movie.episodes || movie.movie?.episodes || [];
   const grid = document.getElementById('epGrid');
 
   if (!eps.length) {
@@ -485,7 +485,7 @@ function renderEpisodes(serverData, serverIdx) {
   ).join('');
 
   if (eps[0]) {
-    playEp(eps[0].link_embed || eps[0].link_m3u8 || '', eps[0].name || 'Tập 1', grid.querySelector('.ep-btn'));
+    const eps = serverData?.server_data || serverData?.items || [];, eps[0].name || 'Tập 1', grid.querySelector('.ep-btn'));
   }
 }
 
