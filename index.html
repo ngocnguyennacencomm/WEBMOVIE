@@ -493,17 +493,56 @@ function playEp(link, name, btn) {
   document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
-  const frame = document.getElementById('videoFrame');
   const placeholder = document.getElementById('videoPlaceholder');
+  const frame = document.getElementById('videoFrame');
+  const box = document.querySelector('.video-box');
 
-  if (link) {
-    frame.src = link;
-    frame.style.display = 'block';
-    placeholder.style.display = 'none';
-  } else {
-    frame.style.display = 'none';
+  if (!link) {
     placeholder.style.display = 'flex';
+    frame.style.display = 'none';
     document.getElementById('placeholderText').textContent = 'Không có link stream cho tập này';
+    return;
+  }
+
+  placeholder.style.display = 'none';
+  frame.style.display = 'none';
+
+  // Xóa video cũ nếu có
+  const oldVideo = document.getElementById('hlsVideo');
+  if (oldVideo) oldVideo.remove();
+  const oldScript = document.getElementById('hlsScript');
+
+  // Tạo video element
+  const video = document.createElement('video');
+  video.id = 'hlsVideo';
+  video.controls = true;
+  video.autoplay = true;
+  video.style.cssText = 'width:100%;height:100%;background:#000;';
+  box.appendChild(video);
+
+  const setupHls = () => {
+    if (link.includes('.m3u8')) {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(link);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = link;
+      }
+    } else {
+      video.src = link;
+    }
+    video.play().catch(() => {});
+  };
+
+  if (window.Hls) {
+    setupHls();
+  } else if (!oldScript) {
+    const s = document.createElement('script');
+    s.id = 'hlsScript';
+    s.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js';
+    s.onload = setupHls;
+    document.head.appendChild(s);
   }
 }
 
