@@ -356,10 +356,10 @@ async function loadMovies(tab = '', genre = '', page = 1) {
   document.getElementById('errorBar').style.display = 'none';
   document.getElementById('heroSection').style.display = 'none';
 
-  let path = `danh-sach/phim-moi-cap-nhat?page=${page}&limit=20`;
-  if (tab === 'series')    path = `danh-sach?type=series&page=${page}&limit=20`;
-  if (tab === 'single')    path = `danh-sach?type=single&page=${page}&limit=20`;
-  if (tab === 'hoathinh')  path = `danh-sach?type=hoathinh&page=${page}&limit=20`;
+  let path = `api/danh-sach/phim-moi-cap-nhat?page=${page}&limit=20`;
+if (tab === 'series')    path = `api/danh-sach?type=series&page=${page}&limit=20`;
+if (tab === 'single')    path = `api/api/danh-sach?type=single&page=${page}&limit=20`;
+if (tab === 'hoathinh')  path = `api/api/danh-sach?type=hoathinh&page=${page}&limit=20`;
   if (genre) path += `&category=${genre}`;
 
   try {
@@ -448,7 +448,7 @@ async function openPlayer(slug, title) {
   document.body.style.overflow = 'hidden';
 
   try {
-    const data  = await apiFetch(`phim/${slug}`);
+    const data  = await apiFetch(`api/phim/${slug}`);
     const movie = data.movie || data.data || data;
     document.getElementById('playerTitle').textContent = movie.name || title;
 
@@ -534,7 +534,7 @@ async function doSearch() {
   document.getElementById('errorBar').style.display = 'none';
 
   try {
-    const data = await apiFetch(`tim-kiem?keyword=${encodeURIComponent(q)}&limit=20`);
+    const data = await apiFetch(`api/tim-kiem?keyword=${encodeURIComponent(q)}&limit=20`);
     const movies = data.items || data.data || (Array.isArray(data) ? data : []);
     renderMovies(movies);
   } catch (e) {
